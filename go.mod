@@ -3,7 +3,7 @@ module somewhat-skopeo-take-2/main
 go 1.17
 
 require (
-	github.com/containers/common v0.43.3-0.20210902095222-a7acc160fb25
+	github.com/containers/common v0.43.2
 	github.com/containers/storage v1.35.0
 	github.com/sirupsen/logrus v1.8.1
 )

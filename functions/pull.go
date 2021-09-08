@@ -77,7 +77,7 @@ func ClearStuff() {
 	_ = _defaultStore.Wipe()
 }
 
-func Pull(imageName string, options *libimage.PullOptions) (imageID string, err error) {
+func Pull(imageName string, options *libimage.PullOptions) (imageID string, imageNames []string, err error) {
 	libimageOptions := &libimage.PullOptions{}
 	//libimageOptions.SignaturePolicyPath = options.SignaturePolicyPath
 	//libimageOptions.RemoveSignatures = options.RemoveSignatures
@@ -92,19 +92,27 @@ func Pull(imageName string, options *libimage.PullOptions) (imageID string, err 
 
 	runtime, err := libimage.RuntimeFromStore(defaultStore(), &libimage.RuntimeOptions{SystemContext: options.SystemContext})
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	// keeping pull policy as always for now, lets just roll with this
 	pulledImages, err := runtime.Pull(context.Background(), imageName, config.PullPolicyAlways, libimageOptions)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	if len(pulledImages) == 0 {
-		return "", fmt.Errorf("some error occurred, could not pull image %s: ", imageName)
+		return "", nil, fmt.Errorf("some error occurred, could not pull image %s: ", imageName)
 	}
 
-	return pulledImages[0].ID(), nil
+	pulledImage := pulledImages[0]
+	names := pulledImage.Names()
+	storageRef, _ := pulledImages[0].StorageReference()
+	manifest, mimeType, _ := pulledImages[0].Manifest(context.Background())
+	fmt.Printf("\n Storage refs of pulled image: %v \n", storageRef)
+	fmt.Printf("\n Pulled image manifest: %v \n", string(manifest))
+	fmt.Printf("\n Pulled image mime type: %v \n", mimeType)
+	fmt.Printf("\n Pulled image name: %v \n", names)
+	return pulledImages[0].ID(), names, nil
 
 }
