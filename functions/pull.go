@@ -56,21 +56,25 @@ func InitDefaultStoreOptions() {
 func Show() {
 	imagesNew, _ := _defaultStore.Images()
 	//spew.Dump(imagesNew)
-	for _, img := range imagesNew {
-		fmt.Printf("\n" + img.NamesHistory[0] + "\n")
-	}
-
 	if len(imagesNew) == 0 {
 		fmt.Printf("\n No images available to show \n")
 	}
 
-	ctrs, _ := _defaultStore.Containers()
-	for _, c := range ctrs {
-		fmt.Printf("\n" + c.ID + "\n")
+	for _, img := range imagesNew {
+		fmt.Printf("\n" + img.Names[0] + "\n")
 	}
+
+
+	ctrs, _ := _defaultStore.Containers()
+
 	if len(ctrs) == 0 {
 		fmt.Printf("\n No containers available to show \n")
 	}
+
+	for _, c := range ctrs {
+		fmt.Printf("\n" + c.ID + "\n")
+	}
+
 }
 
 func ClearStuff() {
