@@ -13,19 +13,26 @@ func main() {
 	}
 	// initializing storage
 	functions.InitDefaultStoreOptions()
-	//functions.Show()
+	functions.Show()
 	//functions.ImagePull("docker://alpine:latest")
 	//functions.InitDefaultStoreOptions()
 	//functions.ClearStuff()
 
 	imageNames := pullImage()
-	exportImage(imageNames)
-	importedImageName := importImage("/home/shubham/take-2-img-skopeo")
-	fmt.Printf("\n Imported image name is %v \n", importedImageName)
-	lookupImportedImage(importedImageName)
 
+	saveImage(imageNames)
 
-	//functions.Show()
+	functions.ClearStuff()
+
+	loadedImageNames := loadImage("/home/shubham/take-2-img-skopeo")
+
+	lookupImage(loadedImageNames[0])
+
+	//importedImageName := importImage("/home/shubham/take-2-img-skopeo")
+	//fmt.Printf("\n Imported image name is %v \n", importedImageName)
+	//lookupImage(importedImageName)
+
+	functions.Show()
 }
 
 func pullImage() (imageNames []string) {
@@ -37,9 +44,9 @@ func pullImage() (imageNames []string) {
 	return imageNames
 }
 
-func exportImage(imageNames []string) {
+func saveImage(imageNames []string) {
 	// defaulting to docker-archive format because we are taking alpine docker image for the sake of POC
-	err := functions.Export(imageNames,"docker-archive", "/home/shubham/take-2-img-skopeo", &libimage.SaveOptions{})
+	err := functions.Save(imageNames, "docker-archive", "/home/shubham/take-2-img-skopeo", &libimage.SaveOptions{})
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
@@ -53,9 +60,17 @@ func importImage(importImagePath string) string {
 	return name
 }
 
-func lookupImportedImage(importedImageName string) {
-	err := functions.Lookup(importedImageName, &libimage.ImportOptions{})
+func lookupImage(imageName string) {
+	err := functions.Lookup(imageName, &libimage.ImportOptions{})
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
+}
+
+func loadImage(path string) []string {
+	loadedImageNames, err := functions.Load(path, &libimage.LoadOptions{})
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+	return loadedImageNames
 }

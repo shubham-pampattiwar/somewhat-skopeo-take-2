@@ -10,7 +10,7 @@ func Import(importPath string, options *libimage.ImportOptions) (string, error) 
 	if err != nil {
 		return "", err
 	}
-	options.CopyOptions.ManifestMIMEType = "application/vnd.docker.distribution.manifest.v2+json"
+	//options.CopyOptions.ManifestMIMEType = "application/vnd.docker.distribution.manifest.v2+json"
 
 	importedImageName, err := runtime.Import(context.Background(), importPath, options)
 	if err != nil {

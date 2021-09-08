@@ -15,7 +15,7 @@ func Lookup(imageName string, options *libimage.ImportOptions) error {
 
 	importedImage, _ , err := runtime.LookupImage(imageName, nil)
 	manifest, mimeType, _  := importedImage.Manifest(context.Background())
-	fmt.Printf("\n Imported image manifest: %v \n", string(manifest))
-	fmt.Printf("\n Imported image mime type: %v \n", mimeType)
+	fmt.Printf("\n Lookedup image manifest: %v \n", string(manifest))
+	fmt.Printf("\n Lookedup image mime type: %v \n", mimeType)
 	return nil
 }
