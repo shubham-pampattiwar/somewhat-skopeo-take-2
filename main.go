@@ -11,12 +11,23 @@ func main() {
 	if reexec.Init() {
 		return
 	}
+
+	ClearFlow()
+	RunFlow()
+}
+
+func ClearFlow() {
 	// initializing storage
 	functions.InitDefaultStoreOptions()
+
+	functions.ClearStuff()
+
 	functions.Show()
-	//functions.ImagePull("docker://alpine:latest")
-	//functions.InitDefaultStoreOptions()
-	//functions.ClearStuff()
+}
+
+func RunFlow() {
+	// initializing storage
+	functions.InitDefaultStoreOptions()
 
 	imageNames := pullImage()
 
@@ -28,11 +39,26 @@ func main() {
 
 	lookupImage(loadedImageNames[0])
 
-	//importedImageName := importImage("/home/shubham/take-2-img-skopeo")
-	//fmt.Printf("\n Imported image name is %v \n", importedImageName)
-	//lookupImage(importedImageName)
-
 	functions.Show()
+
+	//pushImage(loadedImageNames[0], "docker.io/spampatt/skopeo-take-2-test")
+
+
+
+}
+
+func pushImage(src string, dest string) {
+	pushedManifest, err := functions.Push(src,dest,&libimage.PushOptions{
+		CopyOptions: libimage.CopyOptions{
+			InsecureSkipTLSVerify: 0,
+		},
+	})
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+	fmt.Printf("\n Pushed image manifest: %v \n", pushedManifest)
+
+
 }
 
 func pullImage() (imageNames []string) {
@@ -46,6 +72,8 @@ func pullImage() (imageNames []string) {
 
 func saveImage(imageNames []string) {
 	// defaulting to docker-archive format because we are taking alpine docker image for the sake of POC
+	// cannot use container-storage format for saving images, its not supported by the library,
+	// supported format for save op are: docker-archive, oci-archive, docker-dir, oci-dir
 	err := functions.Save(imageNames, "docker-archive", "/home/shubham/take-2-img-skopeo", &libimage.SaveOptions{})
 	if err != nil {
 		fmt.Printf(err.Error())

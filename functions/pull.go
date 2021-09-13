@@ -110,6 +110,10 @@ func Pull(imageName string, options *libimage.PullOptions) (imageID string, imag
 	}
 
 	pulledImage := pulledImages[0]
+	imageData, err := pulledImage.Inspect(context.Background(), true)
+	if err != nil {
+		return "", nil, err
+	}
 	names := pulledImage.Names()
 	storageRef, _ := pulledImages[0].StorageReference()
 	manifest, mimeType, _ := pulledImages[0].Manifest(context.Background())
@@ -117,6 +121,8 @@ func Pull(imageName string, options *libimage.PullOptions) (imageID string, imag
 	fmt.Printf("\n Pulled image manifest: %v \n", string(manifest))
 	fmt.Printf("\n Pulled image mime type: %v \n", mimeType)
 	fmt.Printf("\n Pulled image name: %v \n", names)
+	fmt.Printf("\n Pulled image data: %+v \n",imageData)
+
 	return pulledImages[0].ID(), names, nil
 
 }
